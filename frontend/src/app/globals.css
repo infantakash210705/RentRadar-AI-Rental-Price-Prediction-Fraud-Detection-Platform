@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-ink: #14213d;
+  --color-ink-soft: #4a5568;
+  --color-canvas: #f3f5f7;
+  --color-line: #dde2e8;
+  --color-link: #2f5bea;
+  --color-fair: #1e8e5a;
+  --color-fair-bg: #e6f4ec;
+  --color-below: #8a5a00;
+  --color-below-bg: #fbf0d9;
+  --color-above: #b23c0a;
+  --color-above-bg: #fbe7de;
+  --color-danger: #b42318;
+}
+
+html { color-scheme: light; }
+body { background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.tabular { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--color-link); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* Leaflet price pills */
+.rr-pin { background: var(--color-ink); color: #fff; font-weight: 600; font-size: 12px; line-height: 1; padding: 5px 8px; border-radius: 999px; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(20,33,61,.35); white-space: nowrap; transform: translate(-50%, -50%); }
+.rr-pin[data-active="true"] { background: var(--color-link); z-index: 1000 !important; }
+.leaflet-container { font-family: var(--font-sans); }

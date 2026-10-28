@@ -1,0 +1,52 @@
+# RentRadar: one command to run everything
+#   cp .env.example .env.local   (fill in the REQUIRED values)
+#   docker compose --env-file .env.local up --build
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    env_file: .env.local
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  ml-service:
+    build: { context: ., dockerfile: ml-service/Dockerfile }
+    # Not published to the host on purpose: /metrics and /admin/retrain have no auth and
+    # are only meant to be reached by the backend over the internal network.
+    expose: ["8000"]
+    restart: unless-stopped
+
+  backend:
+    build: { context: ., dockerfile: backend/Dockerfile }
+    env_file: .env.local
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      ML_SERVICE_URL: http://ml-service:8000
+      UPLOAD_DIR: /data/uploads
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      db: { condition: service_healthy }
+      ml-service: { condition: service_started }   # soft dependency: the API degrades gracefully if ML is down
+    ports: ["${BACKEND_PORT:-4000}:4000"]
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    depends_on: [backend]
+    ports: ["3000:3000"]
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  uploads:
