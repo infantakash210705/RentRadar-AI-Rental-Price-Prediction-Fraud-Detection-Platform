@@ -14,6 +14,8 @@ const phone = z.string().trim().regex(/^[+]?[0-9\s-]{7,15}$/, 'Invalid phone num
 
 const signup = z.object({ name, email, password, phone: phone.optional() });
 const login = z.object({ email, password: z.string().min(1).max(128) });
+const verifyOtp = z.object({ email, otp: z.string().trim().regex(/^\d{6}$/, 'OTP must be exactly 6 digits') });
+const resendOtp = z.object({ email });
 const profileUpdate = z.object({
   name: name.optional(),
   phone: phone.nullable().optional(),
@@ -127,4 +129,6 @@ module.exports = {
   createConversation,
   createMessage,
   notificationsQuery,
+  verifyOtp,
+  resendOtp,
 };

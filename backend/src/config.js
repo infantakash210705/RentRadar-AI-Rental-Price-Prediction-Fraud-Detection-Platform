@@ -34,6 +34,9 @@ const config = {
   maxImagesPerListing: int(process.env.MAX_IMAGES_PER_LISTING, 8),
   maxListingsPerDay: int(process.env.MAX_LISTINGS_PER_DAY, 10),
   logLevel: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'test' ? 'silent' : 'info'),
+  smtpUser: process.env.SMTP_USER || '',
+  smtpPass: process.env.SMTP_PASS || '',
+  smtpService: process.env.SMTP_SERVICE || 'gmail',
 };
 
 if (!config.jwtSecret || config.jwtSecret.length < 16) {

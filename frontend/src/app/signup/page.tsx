@@ -92,12 +92,20 @@ export default function SignupPage() {
 
     setBusy(true);
     try {
-      await signup({
+      const emailToVerify = f.email.trim().toLowerCase();
+      const res = await signup({
         name: trimmedName,
-        email: f.email.trim().toLowerCase(),
+        email: emailToVerify,
         password: f.password,
         ...(f.phone.trim() ? { phone: f.phone.trim() } : {}),
       });
+
+      // If backend requires email verification, navigate to verification page
+      if (res && (res as unknown as { requires_verification?: boolean }).requires_verification) {
+        router.push(`/verify-email?email=${encodeURIComponent(emailToVerify)}`);
+        return;
+      }
+
       router.replace('/');
     } catch (err) {
       if (err instanceof ApiError && err.details?.length) {

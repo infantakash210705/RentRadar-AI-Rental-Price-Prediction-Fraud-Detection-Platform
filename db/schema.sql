@@ -21,6 +21,9 @@ CREATE TABLE IF NOT EXISTS users (
   phone         TEXT,
   role          user_role   NOT NULL DEFAULT 'user',
   is_banned     BOOLEAN     NOT NULL DEFAULT FALSE,
+  is_verified   BOOLEAN     NOT NULL DEFAULT FALSE,
+  verification_otp TEXT,
+  otp_expires_at TIMESTAMPTZ,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
